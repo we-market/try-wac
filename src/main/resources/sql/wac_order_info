@@ -1,0 +1,17 @@
+CREATE TABLE wac_order_info (
+  orderid varchar(32) NOT NULL COMMENT '订单id',
+  title varchar(128) NOT NULL COMMENT '订单标题',
+  order_type int(2) NOT NULL COMMENT '订单类型标识',
+  cargo_name varchar(64) COMMENT '商品名',
+  cargo_num int COMMENT '商品数量',
+  original_price VARCHAR(32) COMMENT '商品原价',
+  discount_price VARCHAR(32) COMMENT '商品折扣价',
+  discount VARCHAR(32) COMMENT '折扣力度',
+  discription varchar(256) COMMENT '物品描述',
+  photo_path varchar(128) COMMENT '物品图片路径',
+  publisher varchar(64) NOT NULL COMMENT '发布人openid',
+  consumer varchar(64) NOT NULL COMMENT '收取人openid',
+  created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  primary key(orgid,created_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

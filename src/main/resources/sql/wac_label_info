@@ -1,0 +1,11 @@
+CREATE TABLE wac_label_info (
+  label_id varchar(32) NOT NULL COMMENT '标签唯一id',
+  label_name varchar(64) NOT NULL COMMENT '标签名称',
+  template_origin_price varchar(8) COMMENT '模板原价',
+  template_suggest_price varchar(8) COMMENT '模板建议折扣价',
+  is_popular int(2) COMMENT '是否热门',
+  is_recent_popular int(2) COMMENT '是否近期热门',
+  created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  primary key(orgid,created_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

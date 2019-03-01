@@ -1,0 +1,9 @@
+CREATE TABLE wac_organization_info (
+  orgid varchar(32) NOT NULL COMMENT '组织机构id',
+  org_name varchar(128) NOT NULL COMMENT '组织名称',
+  login_type int(2) NOT NULL COMMENT '登陆验证方式',
+  email_suffix varchar(64) NOT NULL COMMENT '组织邮箱后缀',
+  created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  primary key(orgid,created_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
