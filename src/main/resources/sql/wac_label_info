@@ -7,5 +7,5 @@ CREATE TABLE wac_label_info (
   is_recent_popular int(2) COMMENT '是否近期热门',
   created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  primary key(orgid,created_date)
+  primary key(label_id,created_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

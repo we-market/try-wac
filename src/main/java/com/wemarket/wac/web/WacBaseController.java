@@ -39,9 +39,4 @@ public class WacBaseController extends BaseController {
                      Method callerMethod, String requestUri, BizErrors errors) {
         // TODO Auto-generated method stub
     }
-
-    @RequestMapping(value = "/hi", method = RequestMethod.GET)
-    public void hello(){
-
-    }
 }

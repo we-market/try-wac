@@ -13,5 +13,5 @@ CREATE TABLE wac_order_info (
   consumer varchar(64) NOT NULL COMMENT '收取人openid',
   created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  primary key(orgid,created_date)
+  primary key(orderid,created_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
