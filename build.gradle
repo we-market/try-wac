@@ -22,6 +22,10 @@ repositories {
     mavenCentral()
 }
 
+def jedis = [
+        "redis.clients:jedis:2.9.0"
+]
+
 configurations {
     //remove default logger
     providedRuntime
@@ -57,4 +61,7 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    compile jedis
+    testCompile jedis
+    runtime jedis
 }

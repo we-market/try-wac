@@ -8,7 +8,10 @@ import com.wemarket.wac.common.cache.BaseGuavaCacheManager;
 import com.wemarket.wac.common.exception.SysException;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.cache.annotation.EnableCaching;
@@ -31,11 +34,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisSentinelPool;
 
 import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -48,6 +55,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @EnableCaching
 public class GlobalConfiguration extends WebMvcConfigurerAdapter implements SchedulingConfigurer {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(GlobalConfiguration.class);
 
     @Value("${wac.taskexecutor.corepoolsize}")
     private int corePoolSize;
@@ -63,8 +72,6 @@ public class GlobalConfiguration extends WebMvcConfigurerAdapter implements Sche
     private int awaitTerminationSeconds;
     @Value("${wac.front.taskexecutor.waitfortaskstocompleteonshutdown}")
     private boolean waitForTasksToCompleteOnShutdown;
-
-
 
     @Value("${jdbc.wac.url}")
     private String jdbcUrl;
@@ -93,8 +100,36 @@ public class GlobalConfiguration extends WebMvcConfigurerAdapter implements Sche
     @Value("${jdbc.wac.testOnReturn}")
     private boolean jdbcTestOnReturn;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    @Value("${redis.maxTotal:200}")
+    private int maxTotal;
+    @Value("${redis.maxIdle:100}")
+    private int maxIdle;
+    @Value("${redis.minIdle:8}")
+    private int minIdle;
+    @Value("${redis.maxActive:300}")
+    private int maxActive;
+    @Value("${redis.maxWaitMillis:100000}")
+    private long maxWaitMillis;
+    @Value("${redis.testOnBorrow:true}")
+    private boolean testOnBorrow;
+    @Value("${redis.testOnReturn:true}")
+    private boolean testOnReturn;
+    @Value("${redis.testWhileIdle:true}")
+    private boolean testWhileIdle;
+    @Value("${redis.timeBetweenEvictionRunsMillis:30000}")
+    private long timeBetweenEvictionRunsMillis;
+    @Value("${redis.numTestsPerEvictionRun:10}")
+    private int numTestsPerEvictionRun;
+    @Value("${redis.minEvictableIdleTimeMillis:60000}")
+    private long minEvictableIdleTimeMillis;
+    @Value("redis.timeout:100000")
+    private int timeout;
+    @Value("${redis.sentinel.nodes}")
+    private String nodes;
+    @Value("${redis.sentinel.master}")
+    private String masterName;
+    @Value("${redis.password}")
+    private String password;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar){
@@ -209,27 +244,47 @@ public class GlobalConfiguration extends WebMvcConfigurerAdapter implements Sche
         return messageSource;
     }
 
-    @Bean
-    public RedisTemplate<String,Object> redisTemplate(
-            JedisConnectionFactory jedisConnectionFactory) {
+    @Bean("jedisPoolConfig")
+    public JedisPoolConfig initJedisPoolConfig(){
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(maxTotal);
+        poolConfig.setMaxIdle(maxIdle);
+        poolConfig.setMinIdle(minIdle);
+        poolConfig.setMaxWaitMillis(maxWaitMillis);
+        poolConfig.setTestOnBorrow(testOnBorrow);
+        poolConfig.setTestOnReturn(testOnReturn);
+        poolConfig.setTestWhileIdle(testWhileIdle);
+        poolConfig.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        poolConfig.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
+        poolConfig.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(jedisConnectionFactory);
+        return poolConfig;
+    }
 
-        //自定义序列化方式
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-        redisTemplate.setKeySerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.afterPropertiesSet();
-
-
-        return redisTemplate;
+    @Bean(value = "sentinelPool")
+    public JedisSentinelPool initJedisPool(
+            @Qualifier(value = "jedisPoolConfig") JedisPoolConfig jedisPoolConfig
+    ){
+        Set<String> nodeSet = new HashSet<>();
+        //判断字符串是否为空
+        if(nodes == null || "".equals(nodes)){
+            LOGGER.error("RedisSentinelConfiguration initialize error nodeString is null");
+            throw new RuntimeException("RedisSentinelConfiguration initialize error nodeString is null");
+        }
+        String[] nodeArray = nodes.split(",");
+        //判断是否为空
+        if(nodeArray == null || nodeArray.length == 0){
+            LOGGER.error("RedisSentinelConfiguration initialize error nodeArray is null");
+            throw new RuntimeException("RedisSentinelConfiguration initialize error nodeArray is null");
+        }
+        //循环注入至Set中
+        for(String node : nodeArray){
+            nodeSet.add(node);
+        }
+        //创建连接池对象
+        JedisSentinelPool jedisPool =
+                new JedisSentinelPool(masterName ,nodeSet ,jedisPoolConfig ,timeout , password);
+        return jedisPool;
     }
 
     @Bean(name = "cacheManager")
