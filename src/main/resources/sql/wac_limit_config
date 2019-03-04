@@ -1,4 +1,4 @@
-CREATE TABLE wac_label_info (
+CREATE TABLE wac_limit_config (
   method_name varchar(32) NOT NULL COMMENT '方法名',
   tps int NOT NULL COMMENT 'tps',
   created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
