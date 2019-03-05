@@ -5,7 +5,6 @@ CREATE TABLE wac_user_info (
   is_auth INT(2) NOT NULL default 0 COMMENT '是否授权标识0-未授权，1-已授权',
   email varchar(128) COMMENT '用户邮箱',
   phone varchar(128) COMMENT '用户手机号',
-  search_id_list varchar(256) COMMENT '搜索历史记录',
   created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   primary key(openid,created_date)

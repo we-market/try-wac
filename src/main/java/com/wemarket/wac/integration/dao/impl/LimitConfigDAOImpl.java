@@ -4,6 +4,7 @@ import com.wemarket.wac.biz.dto.LimitConfigDTO;
 import com.wemarket.wac.common.sqlsession.AbstractSqlSession;
 import com.wemarket.wac.integration.dao.LimitConfigDAO;
 import com.wemarket.wac.integration.dao.WacBaseDAO;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Created by justinli on 2019/3/4
  **/
+@Repository("com.wemarket.wac.integration.LimitConfigDAO")
 public class LimitConfigDAOImpl extends WacBaseDAO implements LimitConfigDAO {
 
     @Override
