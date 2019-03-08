@@ -3,7 +3,7 @@ package com.wemarket.wac.biz.dto;
 /**
  * Created by justinli on 2019/3/5
  **/
-public class OrgnazationDTO {
+public class OrganizationDTO {
     private String orgId;
     private String orgName;
     private int loginType;

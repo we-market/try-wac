@@ -122,7 +122,7 @@ public class GlobalConfiguration extends WebMvcConfigurerAdapter implements Sche
     private int numTestsPerEvictionRun;
     @Value("${redis.minEvictableIdleTimeMillis:60000}")
     private long minEvictableIdleTimeMillis;
-    @Value("redis.timeout:100000")
+    @Value("${redis.timeout:100000}")
     private int timeout;
     @Value("${redis.sentinel.nodes}")
     private String nodes;

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wemarket.wac.integration.dao.LabelDAO">
+
+    <select id="getLabel" resultType="java.util.List" parameterType="com.wemarket.wac.biz.dto.LabelDTO">
+        select
+        label_id labelId,
+        label_name labelName,
+        template_origin_price templateOriginPrice,
+        template_suggest_price templateSuggestPrice,
+        is_popular isPopular,
+        is_recent_popular isRecentPopular,
+        created_date createdDate,
+        updated_date updatedDate
+        from wac_label_info
+        <where>
+            <if test="labelId!=null">AND label_id=#{labelId,jdbcType=VARCHAR}</if>
+            <if test="labelName!-null">AND label_id=#{labelId,jdbcType=VARCHAR}</if>
+            <if test="isPopular!=0">AND label_id=#{labelId,jdbcType=VARCHAR}</if>
+            <if test="isRecentPopular!=0">AND label_id=#{labelId,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+
+    <insert id="addLabel" parameterType="com.wemarket.wac.biz.dto.LabelDTO">
+      insert into wac_label_info (
+        label_id,
+        label_name,
+        template_origin_price,
+        template_suggest_price,
+        is_popular,
+        is_recent_popular
+      ) values (
+        #{labelId},
+        #{labelName},
+        #{templateOriginPrice},
+        #{templateSuggestPrice},
+        #{isPopular,jdbcType=INTEGER},
+        #{isRecentPopular,jdbcType=INTEGER}
+      )
+    </insert>
+
+</mapper>
