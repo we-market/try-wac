@@ -1,6 +1,8 @@
 package com.wemarket.wac.biz.dto;
 
-public class LimitConfigDTO {
+import com.wemarket.wac.common.dto.BaseDTO;
+
+public class LimitConfigDTO extends BaseDTO {
     private String methodName;
     private int tps;
 

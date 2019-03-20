@@ -1,9 +1,11 @@
 package com.wemarket.wac.biz.dto;
 
+import com.wemarket.wac.common.dto.BaseDTO;
+
 /**
  * Created by justinli on 2019/3/5
  **/
-public class OrderDTO {
+public class OrderDTO extends BaseDTO {
     private String orderId;
     private String title;
     private int orderType;

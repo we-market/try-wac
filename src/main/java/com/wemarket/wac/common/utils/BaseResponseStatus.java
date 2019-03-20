@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  **/
 public enum BaseResponseStatus {
     SUCCESS("0", "成功"),
+    SYS_TIMEOUT("999995","系统超时"),
     INVALID_REQUEST("999996","不合法请求"),
     REQUEST_UNSAFE("999997","系统请求不安全"),
     FRONT_INTERNAL_SERVER_ERROR("999998", "系统异常，请您稍后再试"),

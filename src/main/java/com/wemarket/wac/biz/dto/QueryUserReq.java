@@ -3,15 +3,12 @@ package com.wemarket.wac.biz.dto;
 import com.wemarket.wac.common.dto.BaseDTO;
 
 /**
- * Created by justinli on 2019/3/5
+ * Created by justinli on 2019/3/11
  **/
-public class UserDTO extends BaseDTO {
+public class QueryUserReq extends BaseDTO {
     private String openId;
     private String userName;
     private String orgId;
-    private int isAuth;
-    private String email;
-    private String phone;
 
     public String getOpenId() {
         return openId;
@@ -35,29 +32,5 @@ public class UserDTO extends BaseDTO {
 
     public void setOrgId(String orgId) {
         this.orgId = orgId;
-    }
-
-    public int getIsAuth() {
-        return isAuth;
-    }
-
-    public void setIsAuth(int isAuth) {
-        this.isAuth = isAuth;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }

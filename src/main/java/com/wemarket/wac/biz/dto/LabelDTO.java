@@ -1,9 +1,11 @@
 package com.wemarket.wac.biz.dto;
 
+import com.wemarket.wac.common.dto.BaseDTO;
+
 /**
  * Created by justinli on 2019/3/5
  **/
-public class LabelDTO {
+public class LabelDTO extends BaseDTO {
     private String labelId;
     private String labelName;
     private String templateOriginPrice;
